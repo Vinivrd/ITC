@@ -17,7 +17,10 @@ def dicionarioTransicao(transicoes):
     dicionarioTransicoes = {}
     for transicao in transicoes:
         estado_atual, simbolo, proximo_estado = transicao
-        dicionarioTransicoes[(estado_atual, simbolo)] = proximo_estado
+        if (estado_atual, simbolo) in dicionarioTransicoes:
+            dicionarioTransicoes[(estado_atual, simbolo)].add(proximo_estado)
+        else:
+            dicionarioTransicoes[(estado_atual, simbolo)] = {proximo_estado}
     return dicionarioTransicoes
 
 def checkVariaveis(vetorVar,maxSimbolos):
@@ -46,6 +49,7 @@ def testeEntradas(automato, entrada):
     visitados = set()  # Conjunto para rastrear os estados já visitados
 
     while fila:
+        print(visitados)
         estado, indice = fila.popleft()  # Remove o próximo estado da fila
         if (estado, indice) in visitados:
             continue  # Se já visitamos este estado nesta posição, vamos para o próximo
@@ -59,16 +63,19 @@ def testeEntradas(automato, entrada):
             continue  # Vamos para o próximo estado
 
         simbolo = entrada[indice]  # Próximo símbolo da entrada
+
+        # Adiciona os próximos estados de acordo com as transições
         transicoes = automato['transicoes'].get((estado, simbolo), set())
         for prox_estado in transicoes:
-            fila.append((prox_estado, indice + 1))  # Adiciona os próximos estados à fila
+            fila.append((prox_estado, indice + 1))
 
-        # Se houver transições vazias
+        # Adiciona os próximos estados para transições vazias
         transicoes_vazias = automato['transicoes'].get(('', simbolo), set())
         for prox_estado in transicoes_vazias:
-            fila.append((prox_estado, indice))  # Continua no mesmo índice
-        print(visitados)
+            fila.append((prox_estado, indice))
+    
     return False
+    
         
 #Entrada do número de estados
 numEstados =  int(input("Digite os estados: ")) 
@@ -109,12 +116,19 @@ else:
 
 simbolosTerminais.append('-')
 vetorTransicao = []
-numInteracoes = int(input('Digite o numero de interações: '))
+
+numInteracoes = int(input('Digite o número de interações: '))
 if(numInteracoes >= 1 and numInteracoes <= 50):
     for i in range(numInteracoes):
-        vetorTransicao.append(checkTransicao(simbolosTerminais,numEstados))
+        transicao = checkTransicao(simbolosTerminais, numEstados)
+        vetorTransicao.append(transicao)
+        # Se a transição for vazia, insira uma transição vazia para cada símbolo do alfabeto
+        if transicao[1] == '-':
+            for simbolo in simbolosTerminais:
+                if (transicao[0], simbolo) not in vetorTransicao:
+                    vetorTransicao.append((transicao[0], simbolo, transicao[2]))
 else:
-    print('Interacoes erro')
+    print('Número de interações inválido')
 
 transicoes = dicionarioTransicao(vetorTransicao)
 
