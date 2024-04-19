@@ -4,7 +4,7 @@ def checkTransicao(vetorVar,numEstados):
     transicao = input('digite a transicao: ').split()
     transicao0 = int(transicao[0])
     transicao2 = int(transicao[2])
-    ## tratar o else
+
     if((transicao0 >= 0 and  transicao0 <= numEstados -1) and (transicao2 >= 0 and  transicao2 <= numEstados -1)):
         if(transicao[1] in vetorVar):
             return transicao
@@ -29,7 +29,6 @@ def checkVariaveis(vetorVar,maxSimbolos):
         for i in range(len(variaveis)):
             if(variaveis[i] not in vetorVar):
                 print("erro")
-                ##tratar o else
         cadeiasEntradas.append(variaveis)
     else:
         print("Passou do tamnho")
@@ -49,7 +48,6 @@ def testeEntradas(automato, entrada):
     visitados = set()  # Conjunto para rastrear os estados já visitados
 
     while fila:
-        print(visitados)
         estado, indice = fila.popleft()  # Remove o próximo estado da fila
         if (estado, indice) in visitados:
             continue  # Se já visitamos este estado nesta posição, vamos para o próximo
